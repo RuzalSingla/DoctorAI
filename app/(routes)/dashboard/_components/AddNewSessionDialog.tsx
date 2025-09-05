@@ -22,7 +22,7 @@ import { useRouter } from 'next/navigation'
 function AddNewSessionDialog() {
   const [note, setNote] = useState<string>();
   const [loading, setLoading] = useState(false);
-  const [suggestedDoctors, setsuggestedDoctors] = useState <doctorAgent[]>([]);
+  const [suggestedDoctors, setsuggestedDoctors] = useState<doctorAgent[]>([]);
   const [selectedDoctor, setSelectedDoctor] = useState<doctorAgent>();
   const router = useRouter();
   const OnClickNext = async () => {

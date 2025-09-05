@@ -5,12 +5,13 @@ import { IconArrowRight } from '@tabler/icons-react';
 
 
 export type doctorAgent={
-    id:number,
+    id: number,
     specialist:string,
     description:string,
     image:string,
-    agentPrompt:string;
-
+    agentPrompt: string,
+    voiceId?:string,
+    
 }
 
 type props={
