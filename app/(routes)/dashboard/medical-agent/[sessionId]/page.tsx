@@ -66,8 +66,8 @@ function MedicalVoiceAgent() {
 
   
   // Start voice conversation
-  //vapi.start(process.env.NEXT_PUBLIC_VAPI_VOICE_ASSISTANT_ID!);
-
+  const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_API_KEY!);
+  
   useEffect(() => {
     if (sessionId) {
       GetSessionDetails();
