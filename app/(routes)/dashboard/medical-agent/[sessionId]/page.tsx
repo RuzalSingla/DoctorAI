@@ -36,13 +36,9 @@ function MedicalVoiceAgent() {
   const [LiveTranscript , setLiveTranscript]=useState<string>();
   const [messages , setMessages]=useState<messages[]>([]);
   
-
- 
-  
-
   
   // Start voice conversation
-  //vapi.start(process.env.NEXT_PUBLIC_VAPI_VOICE_ASSISTANT_ID!);
+ const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_API_KEY!); 
 
   useEffect(() => {
     if (sessionId) {
@@ -69,7 +65,7 @@ function MedicalVoiceAgent() {
 
 
   const StartCall=()=>{
-    //setLoading(true);
+    // setLoading(true);
     const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_API_KEY!);
     setVapiInstance(vapi);
 
@@ -139,7 +135,8 @@ function MedicalVoiceAgent() {
 
   }
 
-  const endCall = () => {
+  const endCall = async() => {
+    // setLoading(true);
     if (!vapiInstance)  return ;
       // Stop the call
       vapiInstance.stop();
@@ -148,11 +145,26 @@ function MedicalVoiceAgent() {
       vapiInstance.off('call-start');
       vapiInstance.off('call-end');
       vapiInstance.off('message');
+      vapiInstance.off('speech-start');
+      vapiInstance.off('speech-end');
 
       // Reset the call state
       setCallStarted(false);
       setVapiInstance(null); // imp
+      const result=await GenerateReport();
+
+      // setLoading(false);
     
+  };
+
+  const GenerateReport=async()=> {
+        const result=await axios.post('/api/medical-report',{
+          messages:messages,
+          sessionDetail:sessionDetail,
+          sessionID: sessionId
+        })
+        console.log(result.data);
+        return result.data;
   };
 
 
