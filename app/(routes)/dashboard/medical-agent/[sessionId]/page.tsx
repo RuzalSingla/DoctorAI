@@ -37,7 +37,31 @@ function MedicalVoiceAgent() {
   const [messages , setMessages]=useState<messages[]>([]);
   
 
- 
+ // ✅ Named event handlers
+  const handleCallStart = () => {
+    console.log("Call started");
+    setCallStarted(true);
+  };
+
+  const handleCallEnd = () => {
+    console.log("Call ended");
+    setCallStarted(false);
+  };
+
+  const handleMessage = (message: any) => {
+    if (message.type === "transcript") {
+      const { role, transcriptType, transcript } = message;
+      console.log(`${role}: ${transcript}`);
+      if (transcriptType === "partial") {
+        setLiveTranscript(transcript);
+        setCurrentRole(role);
+      } else if (transcriptType === "final") {
+        setMessages((prev: any) => [...prev, { role, text: transcript }]);
+        setLiveTranscript("");
+        setCurrentRole(null);
+      }
+    }
+  };
   
 
   
@@ -128,6 +152,11 @@ function MedicalVoiceAgent() {
       }
     });
 
+    // Attach handlers
+    vapi.on("call-start", handleCallStart);
+    vapi.on("call-end", handleCallEnd);
+    vapi.on("message", handleMessage);
+
     vapi.on('speech-start', () => {
       console.log('Assistant started speaking');
       setCurrentRole('assistant');
@@ -145,9 +174,16 @@ function MedicalVoiceAgent() {
       vapiInstance.stop();
 
       //Optinally remove listeners(good for memory management)
-      vapiInstance.off('call-start');
-      vapiInstance.off('call-end');
-      vapiInstance.off('message');
+      // vapiInstance.off('call-start');
+      // vapiInstance.off('call-end');
+      // vapiInstance.off('message');
+
+      // ✅ Proper cleanup
+      vapiInstance.stop();
+      vapiInstance.off("call-start", handleCallStart);
+      vapiInstance.off("call-end", handleCallEnd);
+      vapiInstance.off("message", handleMessage);
+
 
       // Reset the call state
       setCallStarted(false);
