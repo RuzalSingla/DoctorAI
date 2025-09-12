@@ -1,5 +1,7 @@
+import { db } from "@/config/db";
 import { openai } from "@/config/OpenAiModel";
 import { SessionChatTable } from "@/config/schema";
+import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 const REPORT_GEN_PROMPT=`You are an AI Medical Voice Agent that just finished a conversation with a user. Based on doctor AI agent info and Conversation between AI medical agent and user, generate a structured report on the following field:
@@ -32,28 +34,28 @@ Return the result in this JSON format:
     
     Only include valid fields. Respond with nothing else.
      `
-export async function post(req:NextRequest){
-    const {sessionID, sessionDetail, messages}=await req.json();
+export async function POST(req:NextRequest){
+    const {sessionId, sessionDetail, messages}=await req.json();
 
     try{
-        const UserInput="AI Doctor Agent Info : "+JSON.stringify(sessionDetail)+", Conversation:"+JSON.stringif(messages)
+        const UserInput="AI Doctor Agent Info : "+JSON.stringify(sessionDetail)+", Conversation:"+JSON.stringify(messages);
          const completion = await openai.chat.completions.create({
                 model: 'google/gemini-2.5-flash',
                 messages: [
                     {role: 'system', content: REPORT_GEN_PROMPT},
                     {role: 'user', content: UserInput},
                 ],
-                max_tokens: 1000,
+                
             });
         
-            const rawResp = completion.choices[0].message?.content || "";
+            const rawResp = completion.choices[0].message;
             //@ts-ignore
             const Resp =  rawResp.trim().replace('```json', '').replace('```','')
             const JSONResp = JSON.parse(Resp);
             
-            //Save to Database
 
-            const result=await db.update(SessionChatTable).set({
+            //save to database
+            const result = await db.update(SessionChatTable).set({
                 report:JSONResp
             }).where(eq(SessionChatTable.sessionId,sessionId));
             return NextResponse.json(JSONResp)
