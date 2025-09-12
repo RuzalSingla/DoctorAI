@@ -168,7 +168,7 @@ function MedicalVoiceAgent() {
 
   }
 
-  const endCall = () => {
+  const endCall = async() => {
     if (!vapiInstance)  return ;
       // Stop the call
       vapiInstance.stop();
@@ -179,7 +179,7 @@ function MedicalVoiceAgent() {
       // vapiInstance.off('message');
 
       // ✅ Proper cleanup
-      vapiInstance.stop();
+      
       vapiInstance.off("call-start", handleCallStart);
       vapiInstance.off("call-end", handleCallEnd);
       vapiInstance.off("message", handleMessage);
@@ -188,8 +188,26 @@ function MedicalVoiceAgent() {
       // Reset the call state
       setCallStarted(false);
       setVapiInstance(null); // imp
-    
+try {
+    const reportResult = await GenerateReport();
+    console.log("Report generated:", reportResult);
+  } catch (error) {
+    console.error("Error generating report:", error);
+    // Handle the error appropriately (e.g., show a user message)
+  }
   };
+
+  const GenerateReport=async()=> {
+        const result=await axios.post('/api/users/medical-report',{
+          messages:messages,
+          sessionDetail:sessionDetail,
+          sessionId: sessionId
+        })
+        console.log(result.data);
+        return result.data;
+  };
+
+
 
 
   return (
