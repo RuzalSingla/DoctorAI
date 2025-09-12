@@ -7,13 +7,24 @@ export async function POST(req:NextRequest) {
     try{
         const completion = await openai.chat.completions.create({
         model: 'google/gemini-2.5-flash',
+        max_tokens: 1000, // force
         messages: [
             {role: 'system', content:JSON.stringify(AIDoctorAgents)},
             {role: 'user', content: 'User Notes/Symptoms:'+notes+", Depends on user notes and symptoms, Please suggest list of doctor, Return Object in JSON only"},
         ],
-        max_tokens: 1000,
+        
     });
 
+    console.log("Request sent:", {
+        model: 'google/gemini-2.5-flash',
+        max_tokens: 1000,
+        messages: [
+            { role: 'system', content: JSON.stringify(AIDoctorAgents) },
+            { role: 'user', content: 'User Notes/Symptoms:' + notes + ", Depends on user notes and symptoms, Please suggest list of doctor, Return Object in JSON only" },
+        ],
+    });
+
+    console.log("Raw completion:", completion);
     const rawResp = completion.choices[0].message?.content || "";
     //@ts-ignore
     const Resp =  rawResp.trim().replace('```json', '').replace('```','')
