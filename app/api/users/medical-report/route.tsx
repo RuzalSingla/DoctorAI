@@ -48,20 +48,65 @@ export async function POST(req:NextRequest){
                 
             });
         
-            const rawResp = completion.choices[0].message;
+            const rawResp = completion.choices[0].message.content;
             //@ts-ignore
-            const Resp =  rawResp.trim().replace('```json', '').replace('```','')
+            const Resp = rawResp.trim().replace(/```json/g, '').replace(/```/g, '').trim();
             const JSONResp = JSON.parse(Resp);
             
 
             //save to database
             const result = await db.update(SessionChatTable).set({
-                report:JSONResp
+                report:JSONResp,
+                conversation:messages
             }).where(eq(SessionChatTable.sessionId,sessionId));
-            return NextResponse.json(JSONResp)
+            
+            return NextResponse.json({
+                success: true,
+                report: JSONResp
+            });
 
     } catch(e){
-        return NextResponse.json(e)
+        console.error("Error generating report:", e);
+        return NextResponse.json({
+            success: false,
+            error: e instanceof Error ? e.message : "Unknown error"
+        }, { status: 500 });
 
+    }
+}
+
+// GET endpoint to fetch existing report
+export async function GET(req: NextRequest) {
+    try {
+        const { searchParams } = new URL(req.url);
+        const sessionId = searchParams.get("sessionId");
+
+        if (!sessionId) {
+            return NextResponse.json(
+                { error: "sessionId query param missing" },
+                { status: 400 }
+            );
+        }
+
+        const session = await db
+            .select()
+            .from(SessionChatTable)
+            .where(eq(SessionChatTable.sessionId, sessionId));
+
+        if (!session.length) {
+            return NextResponse.json({ error: "Session not found" }, { status: 404 });
+        }
+
+        return NextResponse.json({
+            success: true,
+            report: session[0].report,
+            hasReport: !!session[0].report
+        });
+    } catch (e: any) {
+        console.error("API error:", e);
+        return NextResponse.json({ 
+            success: false,
+            error: e.message 
+        }, { status: 500 });
     }
 }
