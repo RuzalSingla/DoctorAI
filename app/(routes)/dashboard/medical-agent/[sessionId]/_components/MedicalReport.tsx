@@ -59,15 +59,26 @@ export function MedicalReport({ report }: MedicalReportProps) {
     }
   };
 
+  const handlePrint = () => {
+    if (typeof window !== 'undefined') window.print();
+  }
+
   return (
-    <div className="w-full max-w-4xl mx-auto p-6 space-y-6 bg-white">
+    <div className="w-full max-w-4xl mx-auto p-6 space-y-6 bg-white print-w-100">
       {/* Header */}
-      <div className="text-center border-b-2 border-primary pb-4">
-        <div className="flex items-center justify-center gap-2 mb-2">
+      <div className="flex items-start justify-between gap-4 border-b-2 border-primary pb-4">
+        <div className="flex items-center gap-3">
           <FileText className="h-8 w-8 text-primary" />
-          <h1 className="text-3xl font-bold text-gray-900">Medical Consultation Report</h1>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Medical Consultation Report</h1>
+            <p className="text-sm text-gray-500">AI-Generated Medical Summary</p>
+          </div>
         </div>
-        <p className="text-sm text-gray-500">AI-Generated Medical Summary</p>
+        <div className="flex items-center gap-2 no-print">
+          <button onClick={handlePrint} className="inline-flex items-center gap-2 px-3 py-1.5 border rounded bg-accent text-accent-foreground">
+            <FileText className="h-4 w-4" /> Print
+          </button>
+        </div>
       </div>
 
       {/* Basic Information */}
