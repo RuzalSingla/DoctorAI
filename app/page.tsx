@@ -56,7 +56,6 @@ export default function HeroSectionOne() {
         >
           Provide 24/7 intelligent medical support using conversational AI. Triage symptoms, book appointments, and deliver empathetic care with voice-first automation.
         </motion.p>
-        <Link href={'/sign-in'}>
         <motion.div
           initial={{
             opacity: 0,
@@ -70,14 +69,18 @@ export default function HeroSectionOne() {
           }}
           className="relative z-10 mt-8 flex flex-wrap items-center justify-center gap-4"
         >
-          <button className="w-60 transform rounded-lg bg-black px-6 py-2 font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200">
-            Explore Now
-          </button>
-          <button className="w-60 transform rounded-lg border border-gray-300 bg-white px-6 py-2 font-medium text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-gray-100 dark:border-gray-700 dark:bg-black dark:text-white dark:hover:bg-gray-900">
-            Contact Support
-          </button>
+          <Link href={'/sign-in'} className="w-60">
+            <button className="w-full transform rounded-lg bg-black px-6 py-2 font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200">
+              Explore Now
+            </button>
+          </Link>
+
+          <Link href={'/contact-support'} className="w-60">
+            <button className="w-full transform rounded-lg border border-gray-300 bg-white px-6 py-2 font-medium text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-gray-100 dark:border-gray-700 dark:bg-black dark:text-white dark:hover:bg-gray-900">
+              Contact Support
+            </button>
+          </Link>
         </motion.div>
-        </Link>
         <motion.div
           initial={{
             opacity: 0,
