@@ -5,6 +5,8 @@ import { motion } from "motion/react";
 import { FeatureBentoGrid } from "./_components/FeatureBentoGrid";
 import { UserButton, useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+
 
 export default function HeroSectionOne() {
   return (
@@ -120,7 +122,10 @@ const Navbar = () => {
       </button></Link>:
       <div className="flex gap-5 items-center">
         <UserButton/>
-        <Button>Dashboard</Button>
+        <Link href="/dashboard">
+          <Button>Dashboard</Button>
+        </Link>
+
       </div>
       }
     </nav>
