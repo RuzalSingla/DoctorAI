@@ -2,15 +2,15 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { 
-  FileText, 
-  User, 
-  Calendar, 
-  AlertCircle, 
-  Activity, 
-  Clock, 
-  Pill, 
-  ClipboardList 
+import {
+  FileText,
+  User,
+  Calendar,
+  AlertCircle,
+  Activity,
+  Clock,
+  Pill,
+  ClipboardList,
 } from "lucide-react";
 
 export type MedicalReportData = {
@@ -60,8 +60,8 @@ export function MedicalReport({ report }: MedicalReportProps) {
   };
 
   const handlePrint = () => {
-    if (typeof window !== 'undefined') window.print();
-  }
+    if (typeof window !== "undefined") window.print();
+  };
 
   return (
     <div className="w-full max-w-3xl mx-auto p-6 print-w-100 bg-white text-slate-900">
@@ -72,20 +72,27 @@ export function MedicalReport({ report }: MedicalReportProps) {
             <FileText className="h-7 w-7 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-extrabold text-slate-900">Medical Consultation Report</h1>
-            <p className="text-sm text-slate-600">AI-generated medical summary</p>
+            <h1 className="text-2xl font-extrabold text-slate-900">
+              Medical Consultation Report
+            </h1>
+            <p className="text-sm text-slate-600">
+              AI-generated medical summary
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-2 no-print">
-          <button onClick={handlePrint} className="inline-flex items-center gap-2 rounded-md bg-slate-50 px-3 py-1.5 text-sm text-slate-900 ring-1 ring-slate-200 hover:opacity-95">
+          <button
+            onClick={handlePrint}
+            className="inline-flex items-center gap-2 rounded-md bg-slate-50 px-3 py-1.5 text-sm text-slate-900 ring-1 ring-slate-200 hover:opacity-95"
+          >
             <FileText className="h-4 w-4" /> Print
           </button>
         </div>
       </div>
 
-  {/* Basic Information */}
-  <Card className="bg-white border border-slate-200 text-slate-900 shadow-sm">
-          <CardHeader>
+      {/* Basic Information */}
+      <Card className="bg-white border border-slate-200 text-slate-900 shadow-sm">
+        <CardHeader>
           <CardTitle className="flex items-center gap-2 text-slate-900">
             <User className="h-5 w-5 text-slate-700" />
             Session Information
@@ -94,7 +101,9 @@ export function MedicalReport({ report }: MedicalReportProps) {
         <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4 text-slate-800">
           <div>
             <p className="text-sm text-slate-600">Patient</p>
-            <p className="font-medium text-slate-900">{report.user || "Anonymous"}</p>
+            <p className="font-medium text-slate-900">
+              {report.user || "Anonymous"}
+            </p>
           </div>
           <div>
             <p className="text-sm text-slate-600">Consulting Agent</p>
@@ -105,17 +114,21 @@ export function MedicalReport({ report }: MedicalReportProps) {
               <Calendar className="h-4 w-4 text-slate-700" />
               Date &amp; Time
             </p>
-            <p className="font-medium text-slate-900">{formatDate(report.timestamp)}</p>
+            <p className="font-medium text-slate-900">
+              {formatDate(report.timestamp)}
+            </p>
           </div>
           <div>
             <p className="text-sm text-slate-600">Session ID</p>
-            <p className="font-mono text-xs text-slate-700">{report.sessionId}</p>
+            <p className="font-mono text-xs text-slate-700">
+              {report.sessionId}
+            </p>
           </div>
         </CardContent>
       </Card>
 
-  {/* Chief Complaint */}
-  <Card className="bg-white border border-slate-200 text-slate-900 shadow-sm">
+      {/* Chief Complaint */}
+      <Card className="bg-white border border-slate-200 text-slate-900 shadow-sm">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-slate-900">
             <AlertCircle className="h-5 w-5 text-slate-700" />
@@ -142,8 +155,8 @@ export function MedicalReport({ report }: MedicalReportProps) {
 
       {/* Clinical Details */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-  {/* Symptoms */}
-  <Card className="bg-white border border-slate-200 text-slate-900 shadow-sm">
+        {/* Symptoms */}
+        <Card className="bg-white border border-slate-200 text-slate-900 shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-slate-900">
               <Activity className="h-5 w-5 text-slate-700" />
@@ -166,8 +179,8 @@ export function MedicalReport({ report }: MedicalReportProps) {
           </CardContent>
         </Card>
 
-  {/* Duration & Severity */}
-  <Card className="bg-white border border-slate-200 text-slate-900 shadow-sm">
+        {/* Duration & Severity */}
+        <Card className="bg-white border border-slate-200 text-slate-900 shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-slate-900">
               <Clock className="h-5 w-5 text-slate-700" />
@@ -177,11 +190,18 @@ export function MedicalReport({ report }: MedicalReportProps) {
           <CardContent className="space-y-4 text-slate-800">
             <div>
               <p className="text-sm text-slate-600 mb-1">Duration</p>
-              <p className="font-medium text-slate-900">{report.duration || "Not specified"}</p>
+              <p className="font-medium text-slate-900">
+                {report.duration || "Not specified"}
+              </p>
             </div>
             <div>
               <p className="text-sm text-slate-600 mb-2">Severity Level</p>
-              <Badge className={getSeverityColor(report.severity) + " ring-1 ring-slate-200 px-3 py-1 rounded-full text-sm"}>
+              <Badge
+                className={
+                  getSeverityColor(report.severity) +
+                  " ring-1 ring-slate-200 px-3 py-1 rounded-full text-sm"
+                }
+              >
                 {report.severity?.toUpperCase() || "UNKNOWN"}
               </Badge>
             </div>
@@ -190,26 +210,30 @@ export function MedicalReport({ report }: MedicalReportProps) {
       </div>
 
       {/* Medications */}
-      {report.medicationsMentioned && report.medicationsMentioned.length > 0 && (
-        <Card className="bg-white border border-slate-200 text-slate-900 shadow-sm">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-slate-900">
-              <Pill className="h-5 w-5 text-slate-700" />
-              Medications Mentioned
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-2">
-              {report.medicationsMentioned.map((med, index) => (
-                <li key={index} className="flex items-center gap-2 text-slate-700">
-                  <span className="h-2 w-2 rounded-full bg-slate-400"></span>
-                  <span>{med}</span>
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
-      )}
+      {report.medicationsMentioned &&
+        report.medicationsMentioned.length > 0 && (
+          <Card className="bg-white border border-slate-200 text-slate-900 shadow-sm">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-slate-900">
+                <Pill className="h-5 w-5 text-slate-700" />
+                Medications Mentioned
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2">
+                {report.medicationsMentioned.map((med, index) => (
+                  <li
+                    key={index}
+                    className="flex items-center gap-2 text-slate-700"
+                  >
+                    <span className="h-2 w-2 rounded-full bg-slate-400"></span>
+                    <span>{med}</span>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        )}
 
       {/* Recommendations */}
       <Card className="bg-white border border-slate-200 text-slate-900 shadow-sm">
@@ -238,10 +262,11 @@ export function MedicalReport({ report }: MedicalReportProps) {
       {/* Disclaimer */}
       <div className="rounded-lg p-4 bg-slate-50 border border-slate-200 text-slate-700">
         <p className="text-sm">
-          <strong>Disclaimer:</strong> This report is generated by an AI medical assistant and
-          should not be considered as a substitute for professional medical advice, diagnosis, or
-          treatment. Always seek the advice of your physician or other qualified health provider
-          with any questions you may have regarding a medical condition.
+          <strong>Disclaimer:</strong> This report is generated by an AI medical
+          assistant and should not be considered as a substitute for
+          professional medical advice, diagnosis, or treatment. Always seek the
+          advice of your physician or other qualified health provider with any
+          questions you may have regarding a medical condition.
         </p>
       </div>
     </div>
