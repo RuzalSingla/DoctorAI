@@ -38,40 +38,57 @@ export async function POST(req:NextRequest){
     const {sessionId, sessionDetail, messages}=await req.json();
 
     try{
-        const UserInput="AI Doctor Agent Info : "+JSON.stringify(sessionDetail)+", Conversation:"+JSON.stringify(messages);
-         const completion = await openai.chat.completions.create({
-                model: 'google/gemini-2.5-flash',
-                messages: [
-                    {role: 'system', content: REPORT_GEN_PROMPT},
-                    {role: 'user', content: UserInput},
-                ],
-                
-            });
-        
-            const rawResp = completion.choices[0].message.content;
-            //@ts-ignore
-            const Resp = rawResp.trim().replace(/```json/g, '').replace(/```/g, '').trim();
-            const JSONResp = JSON.parse(Resp);
-            
+        const UserInput = "AI Doctor Agent Info : " + JSON.stringify(sessionDetail) + ", Conversation:" + JSON.stringify(messages);
 
-            //save to database
-            const result = await db.update(SessionChatTable).set({
-                report:JSONResp,
-                conversation:messages
-            }).where(eq(SessionChatTable.sessionId,sessionId));
-            
-            return NextResponse.json({
-                success: true,
-                report: JSONResp
-            });
+        // Limit output size to avoid large token consumption (and provider 402 errors)
+        const completion = await openai.chat.completions.create({
+            model: 'google/gemini-2.5-flash',
+            messages: [
+                { role: 'system', content: REPORT_GEN_PROMPT },
+                { role: 'user', content: UserInput },
+            ],
+            max_tokens: 1200,
+            temperature: 0.2,
+        });
 
-    } catch(e){
+        const rawResp = (completion as any)?.choices?.[0]?.message?.content ?? (completion as any)?.choices?.[0]?.text ?? null;
+        if (!rawResp) {
+            console.error('Empty response from model', { completion });
+            return NextResponse.json({ success: false, error: 'Empty response from model', raw: completion }, { status: 500 });
+        }
+
+        //@ts-ignore
+        const Resp = String(rawResp).trim().replace(/```json/g, '').replace(/```/g, '').trim();
+        let JSONResp;
+        try {
+            JSONResp = JSON.parse(Resp);
+        } catch (parseErr) {
+            console.error('Failed to parse model output as JSON', { parseErr, raw: Resp });
+            return NextResponse.json({ success: false, error: 'Failed to parse model JSON', details: String(parseErr), raw: Resp }, { status: 500 });
+        }
+
+        // save to database
+        await db.update(SessionChatTable).set({
+            report: JSONResp,
+            conversation: messages,
+        }).where(eq(SessionChatTable.sessionId, sessionId));
+
+        return NextResponse.json({ success: true, report: JSONResp });
+
+    } catch (e) {
         console.error("Error generating report:", e);
-        return NextResponse.json({
-            success: false,
-            error: e instanceof Error ? e.message : "Unknown error"
-        }, { status: 500 });
+        const err: any = e;
+        // Determine status from provider error if possible
+        const status = err?.status || err?.statusCode || err?.response?.status || err?.code || 500;
+        if (status === 402) {
+            return NextResponse.json({
+                success: false,
+                error: 'Payment required / insufficient credits at OpenRouter. Visit https://openrouter.ai/settings/credits to top up or use another key/model.',
+                raw: err?.response?.data ?? err?.message ?? err,
+            }, { status: 402 });
+        }
 
+        return NextResponse.json({ success: false, error: err instanceof Error ? err.message : "Unknown error", raw: err?.response?.data ?? null }, { status: 500 });
     }
 }
 

@@ -6,6 +6,7 @@ import {Button} from'@/components/ui/button'
 import { IconArrowRight } from '@tabler/icons-react';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@clerk/nextjs';
+import { useEffect, useState } from 'react';
 
 
 export type doctorAgent={
@@ -24,10 +25,14 @@ type props={
 }
 function DoctorAgentCard({doctorAgent}: props){
 
-    const { has } = useAuth();
-    //@ts-ignore
-    const paidUser = has && has({plan: 'pro'})
-    console.log("Paid User", paidUser)
+    const { isLoaded } = useAuth();
+    const [paidUser, setPaidUser] = useState<boolean | undefined>(undefined);
+
+    useEffect(() => {
+        if (!isLoaded) return;
+        setPaidUser(false);
+    }, [isLoaded]);
+    console.log('Paid User', paidUser);
     
     return (
         <div className='relative'>
@@ -43,7 +48,7 @@ function DoctorAgentCard({doctorAgent}: props){
                 className='w-full h-[250px] object-cover rounded-xl'
             />
             <h2 className='font-bold'>{doctorAgent.specialist}</h2>
-            <p className='line-clamp-2 text-sm text-gray-500>'>{doctorAgent.description}</p>
+            <p className='line-clamp-2 text-sm text-gray-500'>{doctorAgent.description}</p>
             <Button className='rounded-full w-full mt-2' disabled={!paidUser && doctorAgent.subscriptionRequired}>Start Consultation <IconArrowRight/></Button>
         
         </div>

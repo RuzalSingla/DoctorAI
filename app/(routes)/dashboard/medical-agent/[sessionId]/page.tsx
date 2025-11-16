@@ -294,14 +294,14 @@ Always seek the advice of your physician or other qualified health provider.
 
 
   return (
-    <div className="p-5 border rounded-3xl bg-secondary">
+    <div className="p-5 border rounded-3xl agent-panel">
       <div className="flex justify-between items-center">
-        <h2 className="p-1 px-2 border rounded-md flex gap-2 items-center">
+        <h2 className="p-1 px-2 border rounded-md flex gap-2 items-center agent-status">
           <Circle className={`h-4 w-4 rounded-full ${callStarted ? 'bg-green-500' : 'bg-red-500'}`} />
 {callStarted ? 'Connected...' : 'Not Connected'}
 
         </h2>
-        <h2 className="font-bold text-xl text-gray-400">00:00</h2>
+        <h2 className="font-bold text-lg agent-muted">00:00</h2>
       </div>
 
       {sessionDetail && (
@@ -314,21 +314,21 @@ Always seek the advice of your physician or other qualified health provider.
             className="h-[100px] w-[100px] object-cover rounded-full"
           />
           
-          <h2 className="mt-2 text-lg">{sessionDetail?.selectedDoctor?.specialist}</h2>
-          <p className="text-sm text-gray-400">AI Medical Voice Agent</p>
-          <h2 className="mt-5 text-gray-400 text-center">Symptoms</h2>
-          <h2 className="text-lg">{sessionDetail.notes}</h2>
+          <h2 className="mt-2 text-base agent-text">{sessionDetail?.selectedDoctor?.specialist}</h2>
+          <p className="text-sm agent-muted">AI Medical Voice Agent</p>
+          <h2 className="mt-5 agent-text text-center font-semibold">Symptoms</h2>
+          <h2 className="text-base agent-text">{sessionDetail.notes}</h2>
           <div className="mt-12 overflow-y-auto flex flex-col  items-start px-7 md:px-18 lg:px-42 xl:px-62
           ">
             
             {messages?.map((msg:messages , index)=>(
             
-                  <h2 className="text-gray-400 p-0.5" key ={index}>{msg.role}:{msg.text}</h2>
+              <h2 className="agent-message p-0.5" key ={index}>{msg.role}: {msg.text}</h2>
            
 
             ))}
             
-            {LiveTranscript && LiveTranscript?.length>0&& <h2 className="text-lg">{currentRole}:{LiveTranscript}</h2>}
+            {LiveTranscript && LiveTranscript?.length>0&& <h2 className="text-base agent-text">{currentRole}: {LiveTranscript}</h2>}
 
             {/*<h2 className="mt-5 text-gray-400">User Msg</h2>*/}
             

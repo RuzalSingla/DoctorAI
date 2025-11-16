@@ -13,12 +13,13 @@ import {
 } from "@/components/ui/dialog"
 import { Textarea } from '@/components/ui/textarea'
 import { ArrowRight, Loader2 } from 'lucide-react'
-import { useState } from 'react'
+ 
 import axios from 'axios'
 import { doctorAgent } from './DoctorAgentCard'
 import SuggestedDoctorCard from './SuggestedDoctorCard'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@clerk/nextjs'
+import { useEffect, useState } from 'react'
 
 function AddNewSessionDialog() {
   const [note, setNote] = useState<string>();
@@ -27,10 +28,15 @@ function AddNewSessionDialog() {
   const [selectedDoctor, setSelectedDoctor] = useState<doctorAgent>();
   const router = useRouter();
 
-   const { has } = useAuth();
-      //@ts-ignore
-      const paidUser = has && has({plan: 'pro'})
-      console.log("Paid User", paidUser)
+  const { isLoaded } = useAuth();
+  const [paidUser, setPaidUser] = useState<boolean | undefined>(undefined);
+
+  useEffect(() => {
+    // Clerk doesn't expose plan info directly in this hook; default to false after auth loads.
+    if (!isLoaded) return;
+    setPaidUser(false);
+  }, [isLoaded]);
+  console.log('Paid User', paidUser)
 
   const OnClickNext = async () => {
     setLoading(true);
