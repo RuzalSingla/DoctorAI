@@ -333,21 +333,7 @@ We welcome contributions to MediVoice AI! Here's how you can help:
 
 ---
 
-## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 👥 Team & Contact
-
-**Created by**: Devanshi Goyal
-
-- **Repository**: [github.com/DevanshiGoyal/MediVoice_AI](https://github.com/DevanshiGoyal/MediVoice_AI)
-- **Issues**: [Report bugs or request features](https://github.com/DevanshiGoyal/MediVoice_AI/issues)
-- **Support**: Contact through the in-app support form
-
----
 
 ## 🙏 Acknowledgments
 
